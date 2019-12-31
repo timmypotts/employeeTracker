@@ -34,11 +34,10 @@ function menu() {
       if (answers.main === "View database tables") {
         viewDatabase();
       } else if (answers.main === "Update database tables") {
-        connection.query("SELECT * FROM employees", function(err, res) {
-          if (err) throw err;
-          console.table(res);
-          connection.end();
-        });
+        // connection.query("SELECT * FROM employees", function(err, res) {
+        //   if (err) throw err;
+        //   console.table(res);
+        // });
         updateDatabase();
       } else if (answers.main === "Add employee, department, or role") {
         addObject();
@@ -72,7 +71,34 @@ function viewDatabase() {
 }
 
 function updateDatabase() {
-  updatePrompt();
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "update",
+        message:
+          "Enter the ID number of the employee you would like to update :"
+      }
+    ])
+    .then(answers => {
+      var employeeID = answers.update;
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "newID",
+            message: "What is their new role ID? :"
+          }
+        ])
+        .then(answers => {
+          var newID = answers.newID;
+          console.log(employeeID);
+          connection.query(
+            `UPDATE employees SET role_id = ${newID} WHERE id = ${employeeID}`
+          );
+          menu();
+        });
+    });
 }
 
 function addObject() {
@@ -109,33 +135,25 @@ function displayDepartments() {
   });
 }
 
-function updatePrompt() {
+function addObject() {
   inquirer
     .prompt([
       {
-        type: "input",
-        name: "update",
-        message:
-          "Enter the ID number of the employee you would like to update :"
+        type: "list",
+        name: "addChoice",
+        message: "What would you like to add? :",
+        choices: ["Employee", "Role", "Department", "Go Back"]
       }
     ])
     .then(answers => {
-      var employeeID = answers.update;
-      inquirer
-        .prompt([
-          {
-            type: "input",
-            name: "newID",
-            message: "What is their new role ID? :"
-          }
-        ])
-        .then(answers => {
-          var newID = answers.newID;
-          console.log(employeeID);
-          connection.query(
-            `UPDATE employees SET role_id = ${newID} WHERE id = ${employeeID}`
-          );
-          menu();
-        });
+      if (answers.addChoice === "Employee") {
+        //do something
+      } else if (answers.addChoice === "Role") {
+        //do something
+      } else if (answers.addChoice === "Department") {
+        //do something
+      } else {
+        menu();
+      }
     });
 }
