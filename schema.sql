@@ -12,7 +12,7 @@ CREATE TABLE employees
   last_name varchar
   (30) NOT NULL,
   role_id int NOT NULL,
-  manager_id int NOT NULL,
+  manager_id int,
   PRIMARY KEY
   (id)
 );
@@ -29,10 +29,12 @@ CREATE TABLE employees
     (id)
 );
 
-    CREATE TABLE department
+    CREATE TABLE departments
     (
       id int
       AUTO_INCREMENT,
   name varchar
-      (30)
+      (30),
+        PRIMARY KEY
+      (id)
 );

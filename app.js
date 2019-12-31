@@ -6,13 +6,13 @@ var connection = mysql.createConnection({
   port: 3306,
   user: "root",
   password: "a0E24me",
-  database: "employeeDB"
+  database: "companyDB"
 });
 
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
-  createProduct();
+  menu();
 });
 
 function menu() {
@@ -25,7 +25,8 @@ function menu() {
         choices: [
           "View database tables",
           "Update database tables",
-          "Add employee, department, or role"
+          "Add employee, department, or role",
+          "Quit"
         ]
       }
     ])
@@ -33,9 +34,11 @@ function menu() {
       if (answers.main === "View database tables") {
         viewDatabase();
       } else if (answers.main === "Update database tables") {
-        updataDatabase();
-      } else {
+        updateDatabase();
+      } else if (answers.main === "Add employee, department, or role") {
         addObject();
+      } else {
+        connection.end();
       }
     });
 }
@@ -52,11 +55,11 @@ function viewDatabase() {
     ])
     .then(answers => {
       if (answers.display === "Employees") {
-        //display employee table
+        displayEmployees();
       } else if (answers.display === "Roles") {
-        //display roles
+        displayRoles();
       } else {
-        //display department
+        displayDepartments();
       }
     });
 }
@@ -67,4 +70,34 @@ function updateDatabase() {
 
 function addObject() {
   //one sec
+}
+
+function displayEmployees() {
+  console.log("Selecting all employees...\n");
+  connection.query("SELECT * FROM employees", function(err, res) {
+    // if (err) throw err;
+    // Log all results of the SELECT statement
+    console.table(res);
+    connection.end();
+  });
+}
+
+function displayRoles() {
+  console.log("Selecting all employees...\n");
+  connection.query("SELECT * FROM roles", function(err, res) {
+    // if (err) throw err;
+    // Log all results of the SELECT statement
+    console.table(res);
+    connection.end();
+  });
+}
+
+function displayDepartments() {
+  console.log("Selecting all employees...\n");
+  connection.query("SELECT * FROM departments", function(err, res) {
+    // if (err) throw err;
+    // Log all results of the SELECT statement
+    console.table(res);
+    menu();
+  });
 }
