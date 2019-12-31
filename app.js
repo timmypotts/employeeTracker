@@ -186,17 +186,17 @@ function addEmployee() {
     .then(answers => {
       var firstName = answers.firstName;
       var lastName = answers.lastName;
-      var roleID = answers.roleID;
-      var managerID = answers.managerID;
+      var roleID = parseInt(answers.roleID);
+      var managerID = parseInt(answers.managerID);
       connection.query(`INSERT INTO employees
       (first_name, last_name, role_id, manager_id)
     VALUES
-      (${firstName}, ${lastName}, ${roleID}, ${managerID});`),
+      ('${firstName}', '${lastName}', ${roleID}, ${managerID});`),
         function(err, res) {
           if (err) throw err;
         };
+      menu();
     });
-  menu();
 }
 
 function addRole() {
@@ -220,17 +220,36 @@ function addRole() {
     ])
     .then(answers => {
       var title = answers.title;
-      var salary = answers.salary;
+      var salary = parseInt(answers.salary);
       var id = answers.id;
 
       connection.query(
-        `INSERT INTO roles (title, salary, department_id) VALUES (${title}, ${salary}, ${id})`,
+        `INSERT INTO roles (title, salary, department_id) VALUES ('${title}', ${salary}, ${id})`,
         function(err, res) {
           if (err) throw err;
         }
       );
+      menu();
     });
-    menu();
 }
 
-function
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the new department? :",
+        name: "name"
+      }
+    ])
+    .then(answers => {
+      name = answers.name;
+      connection.query(
+        `INSERT INTO departments (name) VALUES ('${name}')`,
+        function(err, res) {
+          if (err) throw err;
+        }
+      );
+      menu();
+    });
+}
