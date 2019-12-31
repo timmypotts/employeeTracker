@@ -147,13 +147,90 @@ function addObject() {
     ])
     .then(answers => {
       if (answers.addChoice === "Employee") {
-        //do something
+        addEmployee();
       } else if (answers.addChoice === "Role") {
-        //do something
+        addRole();
       } else if (answers.addChoice === "Department") {
-        //do something
+        addDepartment();
       } else {
         menu();
       }
     });
 }
+
+function addEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Please enter the employees's first name:",
+        name: "firstName"
+      },
+      {
+        type: "input",
+        message: "Please enter the employee's last name:",
+        name: "lastName"
+      },
+      {
+        type: "input",
+        message: "Please enter the employee's role_id",
+        name: "roleID"
+      },
+      {
+        type: "input",
+        message:
+          "Please enter the ID of the manager that this employee reports to.",
+        name: "managerID"
+      }
+    ])
+    .then(answers => {
+      var firstName = answers.firstName;
+      var lastName = answers.lastName;
+      var roleID = answers.roleID;
+      var managerID = answers.managerID;
+      connection.query(`INSERT INTO employees
+      (first_name, last_name, role_id, manager_id)
+    VALUES
+      (${firstName}, ${lastName}, ${roleID}, ${managerID});`),
+        function(err, res) {
+          if (err) throw err;
+        };
+    });
+  menu();
+}
+
+function addRole() {
+  inquirer
+    .prompt([
+      {
+        type: "prompt",
+        message: "What is the new role title? :",
+        name: "title"
+      },
+      {
+        type: "input",
+        message: "What is the salary of this new role? :",
+        name: "salary"
+      },
+      {
+        type: "input",
+        message: "What is the department ID for this new role? :",
+        name: "id"
+      }
+    ])
+    .then(answers => {
+      var title = answers.title;
+      var salary = answers.salary;
+      var id = answers.id;
+
+      connection.query(
+        `INSERT INTO roles (title, salary, department_id) VALUES (${title}, ${salary}, ${id})`,
+        function(err, res) {
+          if (err) throw err;
+        }
+      );
+    });
+    menu();
+}
+
+function
