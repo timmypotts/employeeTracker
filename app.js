@@ -34,6 +34,11 @@ function menu() {
       if (answers.main === "View database tables") {
         viewDatabase();
       } else if (answers.main === "Update database tables") {
+        connection.query("SELECT * FROM employees", function(err, res) {
+          if (err) throw err;
+          console.table(res);
+          connection.end();
+        });
         updateDatabase();
       } else if (answers.main === "Add employee, department, or role") {
         addObject();
@@ -50,7 +55,7 @@ function viewDatabase() {
         type: "list",
         name: "display",
         message: "What table would you like to see? :",
-        choices: ["Employees", "Roles", "Departments"]
+        choices: ["Employees", "Roles", "Departments", "Go Back"]
       }
     ])
     .then(answers => {
@@ -58,14 +63,16 @@ function viewDatabase() {
         displayEmployees();
       } else if (answers.display === "Roles") {
         displayRoles();
-      } else {
+      } else if (answers.display === "Departments") {
         displayDepartments();
+      } else {
+        menu();
       }
     });
 }
 
 function updateDatabase() {
-  //to be determined
+  updatePrompt();
 }
 
 function addObject() {
@@ -78,7 +85,7 @@ function displayEmployees() {
     // if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
-    connection.end();
+    viewDatabase();
   });
 }
 
@@ -88,7 +95,7 @@ function displayRoles() {
     // if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
-    connection.end();
+    viewDatabase();
   });
 }
 
@@ -98,6 +105,37 @@ function displayDepartments() {
     // if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
-    menu();
+    viewDatabase();
   });
+}
+
+function updatePrompt() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "update",
+        message:
+          "Enter the ID number of the employee you would like to update :"
+      }
+    ])
+    .then(answers => {
+      var employeeID = answers.update;
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "newID",
+            message: "What is their new role ID? :"
+          }
+        ])
+        .then(answers => {
+          var newID = answers.newID;
+          console.log(employeeID);
+          connection.query(
+            `UPDATE employees SET role_id = ${newID} WHERE id = ${employeeID}`
+          );
+          menu();
+        });
+    });
 }

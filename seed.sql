@@ -1,11 +1,11 @@
 INSERT INTO employees
     (first_name, last_name, role_id, manager_id)
 VALUES
-    ("Jerry", "Seinfeld", 420),
+    ("Jerry", "Seinfeld", 420, NULL),
     ("Elaine", "Bennes", 30, 1),
     ("Cosmo", "Kramer", 30, 1),
     ("George", "Costanza", 30, 1),
-    ("Frank", "Costello", 420),
+    ("Frank", "Costello", 420, NULL),
     ("Collin", "Sullivan", 30, 5);
 
 INSERT INTO roles
